@@ -13,10 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('chats', function (Blueprint $table) {
+        Schema::create('groups', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('background')->nullable();
             $table->jsonb('personalization')->nullable();
+            $table->unsignedBigInteger('admin_id');
+            $table->foreign('admin_id')
+                ->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -28,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('chats');
+        Schema::dropIfExists('groups');
     }
 };

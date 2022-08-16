@@ -27,8 +27,8 @@ class ChatSeeder extends Seeder
          * @var Chat $chat
          */
         $chat = Chat::query()->create([
-            'background' => '#fff',
-            'personalization' => [ 'volume' => true ],
+            'background' => '#3f3f3f',
+            'personalization' => null,
         ]);
 
         $chat->users()->sync([$firstUser->id, $secondUser->id]);
@@ -39,7 +39,7 @@ class ChatSeeder extends Seeder
          */
         $firstMsg = $chat->messages()->create([
            'user_id' => $firstUser->id,
-           'content' => 'Hi!',
+           'content' => 'Hi, ' . $secondUser->name . '!',
         ]);
 
         $secMsg = $chat->messages()->create([
@@ -50,16 +50,19 @@ class ChatSeeder extends Seeder
         $firstMsg->threads()->create([
             'user_id' => $secondUser->id,
             'content' => 'Hi!',
+            'created_at' => $firstMsg->created_at->addMinutes(2) // For the message created time
         ]);
 
         $secMsg->threads()->create([
             'user_id' => $secondUser->id,
             'content' => 'Fine! Thanks:)',
+            'created_at' => $firstMsg->created_at->addMinutes(2) // For the message created time
         ]);
 
         $secMsg->threads()->create([
             'user_id' => $firstUser->id,
             'content' => 'Good luck!;)',
+            'created_at' => $firstMsg->created_at->addMinutes(5) // For the message created time
         ]);
     }
 }
