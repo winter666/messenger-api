@@ -8,7 +8,11 @@
     </head>
     <body class="antialiased">
         @php
-            $user = \App\Models\User::query()->with(['chats', 'chats.users', 'chats.messages', 'chats.messages.user'])->first();
+            $user = \App\Models\User::query()->with([
+                    'chats', 'chats.users', 'chats.messages',
+                    'chats.messages.user',  'chats.messages.threads',
+                    'chats.messages.threads.user',
+                ])->first();
         @endphp
 
         @if (!is_null($user) && $user->chats->count())
@@ -20,12 +24,26 @@
                         Messages:
                         <div>
                             @foreach($chat->messages as $message)
-                                <div style="border: 1px solid black">
-                                    <div
-                                        style="border-bottom: 1px dashed black; padding: 10px">{{ $message->user->name }}</div>
-                                    <div style="padding: 10px">
-                                        {{ $message->content }}
+                                <div style="margin: 30px">
+                                    <div style="border: 1px solid black; margin-bottom: 10px">
+                                        <div
+                                            style="border-bottom: 1px dashed black; padding: 10px">{{ $message->user->name }}</div>
+                                        <div style="padding: 10px">
+                                            {{ $message->content }}
+                                        </div>
                                     </div>
+                                    @if ($message->threads->count())
+                                        <div style="width: 80%; margin-left: auto; margin-bottom: 10px;">
+                                            @foreach($message->threads as $thread)
+                                                <div style="border: 1px solid black; margin-bottom: 10px;">
+                                                    <div style="border-bottom: 1px dashed black; padding: 10px">{{ $thread->user->name }}</div>
+                                                    <div style="padding: 10px">
+                                                        {{ $thread->content }}
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
