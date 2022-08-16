@@ -17,13 +17,6 @@ class Chat extends Model
         'personalization',
     ];
 
-    protected $attributes = [
-        'background' => '#fff',
-        'personalization' => [
-            'volume' => true,
-        ]
-    ];
-
     protected $casts = [
         'personalization' => 'array',
     ];
