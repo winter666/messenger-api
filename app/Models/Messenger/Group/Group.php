@@ -2,13 +2,12 @@
 
 namespace App\Models\Messenger\Group;
 
-use App\Models\User;
+use App\Models\Messenger\AbstractMessage;
+use App\Models\Messenger\AbstractMessengerType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Group extends Model
+class Group extends AbstractMessengerType
 {
     use HasFactory;
 
@@ -20,17 +19,13 @@ class Group extends Model
         'admin_id',
     ];
 
-    protected $casts = [
-        'personalization' => 'array',
-    ];
-
-    public function users(): BelongsToMany
+    protected function getUserInstance(): Model
     {
-        return $this->belongsToMany(User::class, (new GroupToUser())->getTable());
+        return new GroupToUser();
     }
 
-    public function messages(): HasMany
+    protected function getMessageInstance(): AbstractMessage
     {
-        return $this->hasMany(GroupMessage::class);
+        return new GroupMessage();
     }
 }
