@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Messenger\Chat\Chat;
+use App\Services\Http\Responses\JsonResponse;
+use App\Services\Messenger\Chat\ChatService;
+use App\Services\Messenger\Chat\MakeChatService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+class MessageController extends Controller
+{
+    public function pushToChat(Request $request, $chatId): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'user_id' => 'required|int|exists:users,id',
+            'content' => 'required|string|max:500',
+        ]);
+
+        try {
+            $userId = $request->get('user_id');
+            $content = $request->get('content');
+
+            /**
+             * @var Chat $chat
+             */
+            $chat = Chat::query()->with(['users'])->findOrFail($chatId);
+            $chat->users()->findOrFail($userId);
+            (new ChatService($chat))
+                ->addUserMessage($userId, compact('content'));
+
+            return JsonResponse::ok('success');
+        } catch (ModelNotFoundException $e) {
+            return JsonResponse::srcNotFound();
+        } catch (\Exception $e) {
+            Log::debug($e->getMessage(), $e->getTrace());
+        }
+
+        return JsonResponse::serverError();
+    }
+
+    public function store(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'current_id' => 'required|int|exists:users,id',
+            'user_id' => 'required|int|exists:users,id',
+        ]);
+
+        try {
+            $service = (new MakeChatService(['background' => '#fff', 'personalization' => null]))
+                ->run()
+                ->attachUsers($request->current_id, $request->user_id);
+
+            return JsonResponse::ok($service->getChat(), 'item');
+        } catch (\Exception $e) {
+            Log::debug($e->getMessage(), $e->getTrace());
+        }
+
+        return response()->json(['message' => 'Server error'], 500);
+    }
+
+    public function getOne(Request $request, $chatId): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $chat = Chat::query()
+                ->with(['users', 'messages', 'messages.user'])
+                ->findOrFail($chatId);
+            return JsonResponse::ok($chat, 'item');
+        } catch (ModelNotFoundException $e) {
+            return JsonResponse::srcNotFound();
+        } catch (\Exception $e) {
+            Log::debug($e->getMessage(), $e->getTrace());
+        }
+
+        return JsonResponse::serverError();
+    }
+}

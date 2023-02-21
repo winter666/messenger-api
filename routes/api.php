@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,4 +26,15 @@ Route::prefix('auth')->controller(AuthController::class)->group(function () {
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
     Route::post('me', 'me');
+});
+
+Route::prefix('user')->controller(UserController::class)->group(function() {
+    Route::get('{id}', 'getInfo');
+});
+Route::prefix('chat')->controller(MessageController::class)->group(function() {
+    Route::post('new', 'store');
+    Route::prefix('{id}')->group(function () {
+        Route::get('', 'getOne');
+        Route::post('message/push', 'pushToChat');
+    });
 });
