@@ -36,4 +36,16 @@ class ChatService
         $dto = new MessageThreadDTO($data);
         $this->repository->sendOnThreadToMessage($message, $userId, $dto);
     }
+
+    public function getChat(): Chat
+    {
+        return $this->chat;
+    }
+
+    public function queryChat(): Chat
+    {
+        return Chat::query()
+            ->with(['users', 'messages', 'messages.user'])
+            ->findOrFail($this->chat->id);
+    }
 }

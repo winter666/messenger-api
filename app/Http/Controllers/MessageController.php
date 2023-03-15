@@ -28,10 +28,10 @@ class MessageController extends Controller
              */
             $chat = Chat::query()->with(['users'])->findOrFail($chatId);
             $chat->users()->findOrFail($userId);
-            (new ChatService($chat))
-                ->addUserMessage($userId, compact('content'));
+            $service = new ChatService($chat);
+            $service->addUserMessage($userId, compact('content'));
 
-            return JsonResponse::ok('success');
+            return JsonResponse::ok($service->queryChat(), 'item');
         } catch (ModelNotFoundException $e) {
             return JsonResponse::srcNotFound();
         } catch (\Exception $e) {
