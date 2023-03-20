@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegistrationRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -21,11 +22,12 @@ class AuthController extends Controller
     /**
      * Get a JWT via given credentials.
      *
+     * @param LoginRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(LoginRequest $request)
     {
-        $credentials = request(['email', 'password']);
+        $credentials = ['email' => $request->email, 'password' => $request->password];
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -36,17 +38,15 @@ class AuthController extends Controller
 
     /**
      * User registration
+     * @param RegistrationRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function registration()
+    public function registration(RegistrationRequest $request)
     {
-        $name = request('name');
-        $email = request('email');
-        $password = request('password');
-
         $user = new User();
-        $user->name = $name;
-        $user->email = $email;
-        $user->password = Hash::make($password);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
         $user->save();
 
         return response()->json(['message' => 'Successfully registration!']);
