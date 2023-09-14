@@ -30,7 +30,6 @@ class MessageController extends Controller
             $chat->users()->findOrFail($userId);
             $service = new ChatService($chat);
             $service->addUserMessage($userId, compact('content'));
-
             return JsonResponse::ok($service->queryChat(), 'item');
         } catch (ModelNotFoundException $e) {
             return JsonResponse::srcNotFound();
@@ -49,7 +48,12 @@ class MessageController extends Controller
         ]);
 
         try {
-            $service = (new MakeChatService(['background' => '#fff', 'personalization' => null]))
+            $personalization = [
+                $request->user_id => ['hidden' => true],
+                $request->current_id => ['hidden' => false],
+            ];
+
+            $service = (new MakeChatService(['background' => '#fff', 'personalization' => $personalization]))
                 ->run()
                 ->attachUsers($request->current_id, $request->user_id);
 

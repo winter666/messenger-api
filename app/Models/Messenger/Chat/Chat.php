@@ -16,6 +16,10 @@ class Chat extends AbstractMessengerType
         'personalization',
     ];
 
+    protected $casts = [
+        'personalization' => 'array',
+    ];
+
     protected function getUserInstance(): Model
     {
         return new ChatToUser();

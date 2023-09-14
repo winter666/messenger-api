@@ -25,6 +25,14 @@ abstract class AbstractMessengerRepository implements MessengerRepositoryInterfa
 
     public function addMessageFromUser(AbstractMessengerType $messenger, $user_id, AbstractMessageDTO $messageDTO): AbstractMessage
     {
+        $forUpdatePersonalization = [];
+        foreach ($messenger->personalization as $uId => $personalization) {
+            $forUpdatePersonalization[$uId] = $personalization;
+            $forUpdatePersonalization[$uId]['hidden'] = false;
+        }
+
+        $messenger->update(['personalization' => $forUpdatePersonalization]);
+
         /**
          * @var AbstractMessage $message
          */
