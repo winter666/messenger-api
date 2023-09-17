@@ -18,4 +18,15 @@ class ChatRepository extends AbstractMessengerRepository
     }
 
 
+    public function getOne($id)
+    {
+        /**
+         * @var Chat $chat
+         */
+        $chat = Chat::query()
+            ->with(['users', 'messages', 'messages.user'])
+            ->findOrFail($id);
+
+        return $chat;
+    }
 }

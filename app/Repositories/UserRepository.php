@@ -4,12 +4,13 @@
 namespace App\Repositories;
 
 
+use App\Interfaces\ModelRepositoryInterface;
 use App\Models\Messenger\Chat\Chat;
 use App\Models\User;
 
-class UserRepository
+class UserRepository implements ModelRepositoryInterface
 {
-    public function getInfo(int $id): User
+    public function getOne($id): User
     {
         /**
          * @var User $user

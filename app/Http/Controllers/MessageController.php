@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Messenger\Chat\Chat;
+use App\Repositories\Messenger\ChatRepository;
 use App\Services\Http\Responses\JsonResponse;
 use App\Services\Messenger\Chat\ChatService;
 use App\Services\Messenger\Chat\MakeChatService;
@@ -65,12 +66,10 @@ class MessageController extends Controller
         return response()->json(['message' => 'Server error'], 500);
     }
 
-    public function getOne(Request $request, $chatId): \Illuminate\Http\JsonResponse
+    public function getOne(Request $request, ChatRepository $chatRepository, $chatId): \Illuminate\Http\JsonResponse
     {
         try {
-            $chat = Chat::query()
-                ->with(['users', 'messages', 'messages.user'])
-                ->findOrFail($chatId);
+            $chat = $chatRepository->getOne($chatId);
             return JsonResponse::ok($chat, 'item');
         } catch (ModelNotFoundException $e) {
             return JsonResponse::srcNotFound();

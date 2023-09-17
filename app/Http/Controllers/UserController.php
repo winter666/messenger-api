@@ -12,7 +12,7 @@ class UserController extends Controller
     public function getInfo(Request $request, UserRepository $userRepository, $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $user = $userRepository->getInfo($id);
+            $user = $userRepository->getOne($id);
             return JsonResponse::ok($user, 'item');
         } catch(\Exception $e) {
             return JsonResponse::srcNotFound();
