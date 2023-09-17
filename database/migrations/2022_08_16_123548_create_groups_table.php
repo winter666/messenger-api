@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('background')->nullable();
             $table->jsonb('personalization')->nullable();
             $table->unsignedBigInteger('admin_id');
+            $table->integer('last_message_timestamp')->nullable();
             $table->foreign('admin_id')
                 ->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();

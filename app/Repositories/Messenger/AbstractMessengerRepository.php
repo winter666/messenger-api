@@ -31,7 +31,7 @@ abstract class AbstractMessengerRepository implements MessengerRepositoryInterfa
             $forUpdatePersonalization[$uId]['hidden'] = false;
         }
 
-        $messenger->update(['personalization' => $forUpdatePersonalization]);
+        $messenger->update(['personalization' => $forUpdatePersonalization, 'last_message_timestamp' => now()->timestamp]);
 
         /**
          * @var AbstractMessage $message

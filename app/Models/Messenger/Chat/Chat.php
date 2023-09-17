@@ -14,6 +14,7 @@ class Chat extends AbstractMessengerType
     protected $fillable = [
         'background',
         'personalization',
+        'last_message_timestamp',
     ];
 
     protected $casts = [

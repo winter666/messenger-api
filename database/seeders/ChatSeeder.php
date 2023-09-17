@@ -28,7 +28,10 @@ class ChatSeeder extends Seeder
 
         $chatData = [
             'background' => '#3f3f3f',
-            'personalization' => null,
+            'personalization' => [
+                $firstUser->id => [ 'hidden' => false ],
+                $secondUser->id => [ 'hidden' => false ],
+            ],
         ];
 
         $chat = (new MakeChatService($chatData))
