@@ -17,6 +17,7 @@ class Group extends AbstractMessengerType
         'background',
         'personalization',
         'admin_id',
+        'last_message_timestamp',
     ];
 
     protected function getUserInstance(): Model

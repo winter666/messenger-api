@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('background')->nullable();
             $table->jsonb('personalization')->nullable();
+            $table->integer('last_message_timestamp')->nullable();
             $table->timestamps();
         });
     }

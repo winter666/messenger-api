@@ -70,11 +70,13 @@ class User extends Authenticatable implements JWTSubject
 
     public function chats(): BelongsToMany
     {
-        return $this->belongsToMany(Chat::class, (new ChatToUser())->getTable());
+        return $this->belongsToMany(Chat::class, (new ChatToUser())->getTable())
+            ->orderBy('last_message_timestamp', 'DESC');
     }
 
     public function messages(): HasMany
     {
-        return $this->hasMany(ChatMessage::class);
+        return $this->hasMany(ChatMessage::class)
+            ->orderBy('created_at', 'DESC');
     }
 }
