@@ -44,8 +44,6 @@ class ChatService
 
     public function queryChat(): Chat
     {
-        return Chat::query()
-            ->with(['users', 'messages', 'messages.user'])
-            ->findOrFail($this->chat->id);
+        return $this->repository->getOne($this->chat->id);
     }
 }

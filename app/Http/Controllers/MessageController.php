@@ -27,8 +27,7 @@ class MessageController extends Controller
             /**
              * @var Chat $chat
              */
-            $chat = Chat::query()->with(['users'])->findOrFail($chatId);
-            $chat->users()->findOrFail($userId);
+            $chat = Chat::query()->findOrFail($chatId);
             $service = new ChatService($chat);
             $service->addUserMessage($userId, compact('content'));
             return JsonResponse::ok($service->queryChat(), 'item');
